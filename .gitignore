@@ -148,3 +148,4 @@ my_dump*
 *.orig
 *.orig.*
 *.toc.*
+.vscode

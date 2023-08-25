@@ -20,6 +20,7 @@ This package can be obtained via Maven using JitPack: <https://jitpack.io/#ssard
 - [SARL Capacity for Prolog Knowledge Bases](#sarl-capacity-for-prolog-knowledge-bases)
 	- [TABLE OF CONTENTS](#table-of-contents)
 	- [PRE-REQUISITES](#pre-requisites)
+		- [Update August 2023](#update-august-2023)
 	- [DEVELOP CAPACITY/SKILL FURTHER](#develop-capacityskill-further)
 	- [USING SARL-PROLOG-CAP IN YOUR SARL APPLICATION VIA MAVEN](#using-sarl-prolog-cap-in-your-sarl-application-via-maven)
 	- [WHAT IS PROVIDED IN THIS CAPACITY/SKILL](#what-is-provided-in-this-capacityskill)
@@ -44,24 +45,36 @@ This package can be obtained via Maven using JitPack: <https://jitpack.io/#ssard
 This capacity & skill requires [SWI-Prolog with JPL](https://jpl7.org/DeploymentLinux) installed:
 
 * [SWI-Prolog](http://www.swi-prolog.org/): this is the actual SWI Prolog system, including its main library `libswipl.so/dll/dylib`.
-	* Use either stable version 7.6.4 (available in standard Linux repos) or, better, compile and install 8.1.x from [SWI-devel repo](https://github.com/SWI-Prolog/swipl-devel).
-	* Official 8.0.x versions has issues with the `libswipl.so/dll/dylib` library and makes JPL crash; see [issue](https://github.com/ssardina-research/packages-jpl/issues/21). It has been fixed in the git repo though, and should be fine in higher 8.2.x.
+	* It is best to grab latest version from its [PPA](https://www.swi-prolog.org/build/PPA.txt).
 * [JPL](https://jpl7.org/) bidirectional SWI-Java interface. In Linux Ubuntu it is provided by package `swi-prolog-java`. It has two parts:
 	* Native library `libjpl.so/dll/dylib`: This is the C library implementing the interface between SWI-Prolog and Java.
 	* Prolog library `jpl.pl`: This is a SWI Prolog library providing the [Prolog API](https://jpl7.org/PrologApiOverview) to access Java from Prolog.
 	* Java API `jpl.jar`: provides the [Java API](https://jpl7.org/JavaApiOverview) to access Prolog from Java.
-		* The package `swi-prolog-java` provided in standard distributions (e.g., Ubuntu) come with JPL 7.5.0 (in Linux, in `/usr/lib/swi-prolog/lib/jpl.jar`), which is very old.
-	    * The [PPA](https://www.swi-prolog.org/build/PPA.txt) has SWI-Prolog 8.2+ which already carries JPL 7.6.0 version. One could install this version into Maven local repo as follows:
+		* While SWPL distribution with the Java package (`swi-prolog-java` in Ubuntu) comes with its `jpl.jar`, the current framework will grab the latest JAR via Maven and JitPack from the official SWIPL repo.
+		* Said so, one can manually install a specific JAR version  in the Maven local repo as follows:
 
-				mvn install:install-file -Dfile=/usr/local/swipl-git/lib/swipl/lib/jpl.jar \
+			```shell
+			$ mvn install:install-file -Dfile=/usr/share/java/jpl.jar \
 						-DgroupId=com.github.SWI-Prolog -DartifactId=packages-jpl \
-						-Dversion=7.6.0 -Dpackaging=jar
-
-		* Still, SARL-PROLOG-CAP will grab the latest version from the official repo, by obtaining the [latest SNAPSHOT in the maven branch](https://github.com/SWI-Prolog/packages-jpl/tree/maven).
+						-Dversion=7.6.1 -Dpackaging=jar
+			```
 
 Here are some [good examples on how to use JPL](https://github.com/SWI-Prolog/packages-jpl/blob/master/examples/java/) from Java.
 
 Besides the above being installed, it is also very important to tell your system and application where Prolog is and the above components can be found. To do so, one may need to set-up a few environment variables, like `LD_LIBRARY_PATH` and `LD_PRELOAD` (to find native `.so/dll/dylib` libraries), `CLASSPATH` (to point to `jpl.jar`) and `SWI_HOME_DIR` (to point to SWI-Prolog home dir). Please refer to [this guide](https://jpl7.org/DeploymentLinux) on JPL documentation.
+
+### Update August 2023
+
+The system did not compiled anymore; see [issue #13](https://github.com/ssardina-agts/sarl-prolog-cap/issues/13). The POM was fixed as per fix reported in SARL issue [#1079](https://github.com/sarl/sarl/issues/1079).
+
+However, the system yields error under Java 17, so we need to install and use Java 11 (linux):
+
+```shell
+$ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+```
+
+Maven will always use the Java set in `JAVA_HOME`.
+
 
 ----------------------------------
 ## DEVELOP CAPACITY/SKILL FURTHER

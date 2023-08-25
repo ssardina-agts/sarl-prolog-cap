@@ -8,7 +8,7 @@
 	<!-- ########################################################################## -->
 	<groupId>com.github.ssardina-agts</groupId>
 	<artifactId>sarl-prolog-cap</artifactId>
-	<version>4.1.0</version>
+	<version>5.0.0</version>
 
 	<name>SARL Capacity for SWI Prolog Connectivity</name>
 	<url>https://github.com/ssardina-agts/sarl-prolog-cap</url>
@@ -41,7 +41,13 @@
 		<!-- SARL framework version and configuration -->
 		<sarl.version>0.11.0</sarl.version>
 
-		<jdk.version>1.8</jdk.version>
+		<!-- Since the 3.8.0 version of the Maven compiler plugin, you can actually specify the release version of Java rather than source and target: -->
+		<java.release>11</java.release>
+
+		<!-- Not used anymore, now we use release  -->
+		<!-- <jdk.version>1.8</jdk.version> -->
+
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<skipTests>true</skipTests>
@@ -292,7 +298,8 @@
 		<dependency>
 			<groupId>com.github.SWI-Prolog</groupId>
 			<artifactId>packages-jpl</artifactId>
-			<version>V8.3.2</version> <!-- version 7.6.1 of JPL -->
+			<!-- <version>V8.3.2</version>  --> <!-- version 7.6.1 of JPL -->
+			<version>V9.0.4</version> <!-- tag in the JPL repo -->
 		</dependency>
 
 	</dependencies>
@@ -322,7 +329,8 @@
 			</snapshots>
 		</repository>
 
-		<!-- JitPack used for remote installation of MASSim from Github -->
+		<!-- JitPack used for remote installation of MASSim from Github 
+				Needed to rab the JLP from GitHub-->
 		<repository>
 			<id>jitpack.io</id>
 			<name>JitPack Repository</name>
@@ -372,33 +380,47 @@
 				<version>${sarl.version}</version>
 				<extensions>true</extensions>
 				<configuration>
-					<source>${jdk.version}</source>
-					<target>${jdk.version}</target>
+					<release>${java.release}</release>
+					<!-- <source>${jdk.version}</source> -->
+					<!-- <target>${jdk.version}</target> -->
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
-
 				<dependencies>
 					<!-- Fix to deal with issue with wrong signed class (June 2021) https://groups.google.com/g/sarl/c/dt9u1dg6PK0 -->
+					<!-- Later: https://github.com/sarl/sarl/issues/1079 -->
 					<dependency>
+					<groupId>org.eclipse.platform</groupId>
+					<artifactId>org.eclipse.equinox.common</artifactId>
+					<version>3.14.100</version>
+				  </dependency>
+				  <dependency>
+					<groupId>io.sarl.maven</groupId>
+					<artifactId>io.sarl.maven.sdk</artifactId>
+					<version>${sarl.version}</version>
+					<exclusions>
+					  <exclusion>
 						<groupId>org.eclipse.platform</groupId>
 						<artifactId>org.eclipse.equinox.common</artifactId>
-						<version>3.14.100</version>
-					</dependency>
+					  </exclusion>
+					</exclusions>
+				  </dependency>
 				</dependencies>
-			</plugin>
+			  </plugin>
 
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<!-- <configuration> <source>1.6</source> <target>1.6</target> </configuration> -->
+				<configuration>
+					<release>${java.release}</release>
+				</configuration>
 			</plugin>
 
 			<!-- Attach sources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.0.1</version>
+				<!-- <version>3.0.1</version> -->
 				<executions>
 					<execution>
 						<id>attach-sources</id>
